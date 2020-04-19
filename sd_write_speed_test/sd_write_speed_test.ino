@@ -37,7 +37,7 @@
 // Wiz820+SD board: pin 4
 // Teensy 2.0: pin 0
 // Teensy++ 2.0: pin 20
-const int chipSelect = 4;
+const int chipSelect = 10;
 
 File file;
 
@@ -63,15 +63,27 @@ void setup()
     return;
   }
   Serial.println("card initialized.");
-  file = SD.open('data.txt', FILE_WRITE);  // also need to test with 'O_CREAT | O_WRITE'
+  file = SD.open("data.txt", O_CREAT | O_WRITE);  // also need to test with 'O_CREAT | O_WRITE'
+  file.close();
 }
-
+int count = 0;
+String toWrite = "this is a big ass String. Along with a really, really, really big ass string; ";
 void loop()
 {
-  file.println(String(millis())); 
-  /*
-   * if(millis() % 20) == 0){
-   *   file.flush();
-   * }
-   */
+  if(!file){
+    file = SD.open("data.txt", FILE_WRITE);
+  }
+  file.println(toWrite + String(millis()));
+  Serial.println(toWrite + String(millis()));
+  
+    if((millis() % 20) == 0){
+      file.flush();
+      file.close();
+   }
+   count++;
+   if(count > 10000){
+    Serial.println("Closing data file.");
+    file.close();
+    while(1);
+   }
 }
