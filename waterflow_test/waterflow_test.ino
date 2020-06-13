@@ -1,25 +1,42 @@
 #include <math.h>
 long time = millis();
 
-//#define LOW_PRESSURE_LOX A2
-#define LOW_PRESSURE_PROP A2
-#define LOW_PRESSURE_INJECTOR A0
+#define LOW_PRESSURE_1 A0
+#define LOW_PRESSURE_2 A1
+#define LOW_PRESSURE_3 A2
+#define LOW_PRESSURE_4 A3
 
-//#define HIGH_PRESSURE_PROP A4
-//#define HIGH_PRESSURE_LOX A4
+#define HIGH_PRESSURE_1 A4
+#define HIGH_PRESSURE_2 A5
 
 int input = 0;
 bool shouldPrint = false;
+
+int numLowPressure = 0;
+int numHighPressure = 0;
+
 void setup() {
-  // put your setup code here, to run once:
-
-  //pinMode(LOW_PRESSURE_LOX, INPUT);
-  pinMode(LOW_PRESSURE_PROP, INPUT);
-  pinMode(LOW_PRESSURE_INJECTOR, INPUT);
-  //pinMode(HIGH_PRESSURE_PROP, INPUT);
-  //pinMode(HIGH_PRESSURE_LOX, INPUT);
-
   Serial.begin(9600);
+
+  Serial.println("How many low pressure sensors are connected?");
+  while (!Serial.available());
+  
+  int lowPressureRead = Serial.read();
+  numLowPressure = lowPressureRead - 48;
+  
+  Serial.println("How many low pressure sensors are connected?");
+  while (!Serial.available());
+
+  numHighPressure = Serial.read() - 48;
+
+  pinMode(LOW_PRESSURE_1, INPUT);
+  pinMode(LOW_PRESSURE_2, INPUT);
+  pinMode(LOW_PRESSURE_3, INPUT);
+  pinMode(LOW_PRESSURE_4, INPUT);
+  
+  pinMode(HIGH_PRESSURE_1, INPUT);
+  pinMode(HIGH_PRESSURE_2, INPUT);
+
 }
 
 // 0.88V - 4.4V : ?? - 5000 PSI
@@ -30,11 +47,16 @@ int converted_lox_low, converted_prop_low, converted_lox_high, converted_prop_hi
 int periodic = 50;
 void loop() {
   if (Serial.available() > 0)   {
-    if(Serial.read() == '0'){
+    int readByte = Serial.read();
+    if(readByte == 't'){
+      shouldPrint = true;
+    } else if(readByte == 'f'){
+      shouldPrint = false;
+    } else if(readByte == '0'){
       shouldPrint = !shouldPrint;
     }
   }
-  // put your main code here, to run repeatedly:
+  
   //lowpressurelox = analogRead(LOW_PRESSURE_LOX);
   lowpressureprop = analogRead(LOW_PRESSURE_PROP);
   lowpressureinjector = analogRead(LOW_PRESSURE_INJECTOR);
