@@ -241,6 +241,7 @@ float lowPressureConversion(int raw){
 
 float highPressureConversion(int raw){
   //using amplifier w/out offset.
-  return ((float)(raw / 1024) * 4.8 - 1.3) * (5000/3.5);
+  return ((float)raw / 1024) - 0.2) * 5000;
+//  return ((float)(raw / 1024) * 4.8 - 1.3) * (5000/3.5);
   //return (6.612739309669555*(raw) - 1237); //0.88 / 4.4 * 1024)); //- 1237.7612969223858);
 }

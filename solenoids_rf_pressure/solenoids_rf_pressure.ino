@@ -26,7 +26,7 @@ int numLowPressure = 0;
 int numHighPressure = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(57600);
   
   //Setup and start RF communication
 //  RFSerial.begin(57600);
@@ -119,6 +119,9 @@ void loop() {
       } else if (readByte == 'z') {
         Serial.print("Toggled PROP Gems: ");
         Serial.println(valves.togglePropGems());
+      } else if (readByte == 'e') {
+        Serial.print("Toggled High Pressure: ");
+        Serial.println(valves.toggleHighPressureSolenoid());
       }
     }
 
@@ -253,5 +256,7 @@ float lowPressureConversion(int raw){
 }
 
 float highPressureConversion(int raw){
-  return ((((float)raw * .6949) / 1024) * 4.8 - 1.3) * (5000/3.5) +200;
+    return (((float)raw / 1024) - 0.2) * 5000;
+
+//  return ((((float)raw * .6949) / 1024) * 4.8 - 1.3) * (5000/3.5) +200;
 }
