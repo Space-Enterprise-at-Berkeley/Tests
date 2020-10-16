@@ -5,6 +5,7 @@ float reading1 = 0;
 float reading2 = 0;
 float reading3 = 0;
 float data[6];
+
 Thermocouple sensor = Thermocouple(3);
 
 void setup() {
@@ -14,7 +15,6 @@ void setup() {
   sensor.init();
   delay(50);
   Serial.println("Started");
-  
 }
 
 void loop() {
