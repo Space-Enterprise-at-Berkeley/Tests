@@ -1,6 +1,6 @@
 #include <math.h>
 #include <solenoids.h>
-#include <INA226.h>
+#include <INA226.h> // https://github.com/jarzebski/Arduino-INA226
 #include <tempController.h>
 #include <Thermocouple.h>
 
