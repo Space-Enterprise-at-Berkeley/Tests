@@ -1,6 +1,8 @@
 #include <math.h>
 #include <solenoids.h>
-#include <Wire.h>
+#include <SoftwareSerial.h>
+
+//Solenoids valves;
 
 #define LOW_PRESSURE_1 A0
 #define LOW_PRESSURE_2 A1
@@ -10,7 +12,9 @@
 #define HIGH_PRESSURE_1 A4
 #define HIGH_PRESSURE_2 A5
 
-#define RFSerial Serial8
+//#define RFSerial Serial1
+
+SoftwareSerial teensy(6, 7);
 
 void readData();
 void convertData();
@@ -24,94 +28,13 @@ long currTime2 = millis();
 int numLowPressure = 0;
 int numHighPressure = 0;
 
-/*
- * Template_I2C.ino - A c++ program that uses I2C communication to receive requests
- * for data from Brain_I2C.ino and send the corresponding data back.
- * Created by Vainavi Viswanath, Aug 21, 2020.
- */
-#include <Wire.h>
-
-/*
- * Change this address according to the board address this code is uploaded on
- */
-int Address = 8;
-
-int sensorNum = 0;
-void (*generalFunc)(float*);
-
 void setup() {
-  Wire.begin(Address);
-  Wire.onRequest(requestEvent);
-  Wire.onReceive(updateSensorNum);
-  Serial.begin(9600);
-}
-
-void loop() {
-  delay(100);
-}
-
-/*
- * Data structure to allow the conversion of bytes to floats and vice versa.
- */
-union floatArrToBytes {
-  char buffer[24];
-  float sensorReadings[6];
-} farrbconvert;
-
-/*
- * When a request comes from the brain, collects data from the requested sensor
- * and sends back float array with data points.
- */
-void requestEvent() {
-  float data[6] = {0,0,0,0,0,0};
-  generalFunc(data);
-  for (int i=0; i<6; i++) {
-    farrbconvert.sensorReadings[i] = data[i];
-  }
-  Wire.write(farrbconvert.buffer, 24);
-}
-
-/*
- * Selects the corresponding function to the sensor which data is requested from.
- */
-void updateSensorNum(int howMany) {
-  while (!Wire.available());
-  sensorNum = Wire.read();
-  if (sensorNum == 0) {
-    generalFunc = &getReading0;
-  } else if (sensorNum == 1) {
-    generalFunc = &getReading1;
-  }
-}
-
-/*
- * Method to collect data from ______
- */
-void getReading0(float *data) {
-  //get the sensor reading here
-  data[0] = 36.89;
-  data[1] = 25.50;
-  data[2] = 30.45;
-}
-
-/*
- * Method to collect data from ______
- */
-float getReading1(float *data) {
-  //get the sensor reading here
-  data[0] = 14.26;
-}
-
-
-
-void setup() {
-
-  Wire.begin(8);
-
   //If connected to RF, change baud rate from 9600 to 57600
   Serial.begin(57600);
+  teensy.begin(9600);
 
   // Setup solenoids
+//  valves.init();
 
 
   Serial.println("How many low pressure sensors are connected?");
@@ -178,35 +101,35 @@ int periodic = 100; // take data 10 times a second.
 void loop() {
   currTime = millis();
   if((currTime%int(periodic)) == 0) {
-//    if (Serial.available() > 0) {
-//      int readByte = Serial.read();
-//      if(readByte == 'a') {
-//        Serial.print("Toggled LOX 2: ");
+    if (Serial.available() > 0) {
+      int readByte = Serial.read();
+      if(readByte == 'a') {
+        Serial.print("Toggled LOX 2: ");
 //        Serial.println(valves.toggleLOX2Way());
-//      } else if(readByte == 'b') {
-//        Serial.print("Toggled LOX 5: ");
+      } else if(readByte == 'b') {
+        Serial.print("Toggled LOX 5: ");
 //        Serial.println(valves.toggleLOX5Way());
-//      } else if (readByte == 'c') {
-//        Serial.print("Toggled LOX Gems: ");
+      } else if (readByte == 'c') {
+        Serial.print("Toggled LOX Gems: ");
 //        Serial.println(valves.toggleLOXGems());
-//      } else if(readByte == 'x') {
-//        Serial.print("Toggled PROP 2: ");
+      } else if(readByte == 'x') {
+        Serial.print("Toggled PROP 2: ");
 //        Serial.println(valves.toggleProp2Way());
-//      } else if (readByte == 'y') {
-//        Serial.print("Toggled PROP 5: ");
+      } else if (readByte == 'y') {
+        Serial.print("Toggled PROP 5: ");
 //        Serial.println(valves.toggleProp5Way());
-//      } else if (readByte == 'z') {
-//        Serial.print("Toggled PROP Gems: ");
+      } else if (readByte == 'z') {
+        Serial.print("Toggled PROP Gems: ");
 //        Serial.println(valves.togglePropGems());
-//      } else if (readByte == 'e') {
-//        Serial.print("Toggled High Pressure: ");
+      } else if (readByte == 'e') {
+        Serial.print("Toggled High Pressure: ");
 //        Serial.println(valves.toggleHighPressureSolenoid());
-//      }
-//    }
+      }
+    }
 
     readData();
 
-//    convertData();
+    convertData();
 
     //need some check on magnitude of reading to see if we should print data.
     if(shouldPrint){
@@ -214,7 +137,7 @@ void loop() {
       if(numHighPressure >= 1){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedHigh1);
         //bufferIndex += String(convertedHigh1).length();
-        Serial.print(highPressure1);
+        Serial.print(convertedHigh1);
       } else {
         Serial.print("-1");
       }
@@ -227,7 +150,7 @@ void loop() {
 
       Serial.print(", ");
       if(numLowPressure >= 1){
-        Serial.print(lowPressure1);
+        Serial.print(convertedLow1);
         //Serial.println("Added first low PT reading;
       } else {
         Serial.print("-1");
@@ -237,7 +160,7 @@ void loop() {
       if(numLowPressure >= 2){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedLow2);
         //bufferIndex += String(convertedLow2).length();
-        Serial.print(lowPressure2);
+        Serial.print(convertedLow2);
       } else {
         Serial.print("-1");
       }
@@ -246,7 +169,7 @@ void loop() {
       if(numLowPressure >= 3){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedLow3);
         //bufferIndex += String(convertedLow3).length();
-        Serial.print(lowPressure3);
+        Serial.print(convertedLow3);
       } else {
         Serial.print("-1");
       }
@@ -255,10 +178,59 @@ void loop() {
       if(numLowPressure >= 4){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedLow4);
         //bufferIndex += String(convertedLow4).length();
-        Serial.print(lowPressure4);
+        Serial.print(convertedLow4);
       } else {
         Serial.print("-1");
       }
+
+      Serial.print(", ");
+      if (teensy.available()){
+        Serial.print(teensy.parseFloat());
+        Serial.read();
+      } else {
+        Serial.print(-1);
+      }
+
+      Serial.print(", ");
+      if (teensy.available()){
+        Serial.print(teensy.parseFloat());
+        Serial.read();
+      } else {
+        Serial.print(-1);
+      }
+
+      Serial.print(", ");
+      if (teensy.available()){
+        Serial.print(teensy.parseFloat());
+        Serial.read();
+      } else {
+        Serial.print(-1);
+      }
+
+      Serial.print(", ");
+      if (teensy.available()){
+        Serial.print(teensy.parseFloat());
+        Serial.read();
+      } else {
+        Serial.print(-1);
+      }
+
+      Serial.print(", ");
+      if (false){
+        Serial.print(teensy.parseFloat());
+        Serial.read();
+      } else {
+        Serial.print(-1);
+      }
+
+      Serial.print(", ");
+      if (false){
+        Serial.print(teensy.parseFloat());
+        Serial.read();
+      } else {
+        Serial.print(-1);
+      }
+      
       Serial.print("\n");
     }
   }
@@ -336,6 +308,7 @@ float lowPressureConversion(int raw){
 }
 
 float highPressureConversion(int raw){
+//    float
 //    return -9083 + (1.239 * pow(10,2) * raw) - 7.17 * pow(10,-1) * pow(raw, 2) + 2.29 * pow(10,-3) * pow(raw, 3);
     float converted = (((float)raw / 1024) - 0.2) * 5000;
     return converted;

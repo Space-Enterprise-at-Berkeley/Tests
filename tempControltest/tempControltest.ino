@@ -2,7 +2,7 @@
 #include <Thermocouple.h>
 #include <math.h>
 
-#define heaterPin 4
+#define heaterPin 7
 #define testPin 2
 
 
@@ -23,45 +23,27 @@ void setup() {
   pinMode(heaterPin, OUTPUT);
 
   pinMode(testPin, OUTPUT);
-  
-  digitalWrite(heaterPin, heaterStatus);
-  digitalWrite(heaterPin, HIGH);
-  Thermocouple::init(1);
-  tempController::init(20, 2); // set at 10 deg C with naive controller
-}
 
+//  pinMode(4, OUTPUT);
+//  analogWrite(4, 150);
+  
+//  digitalWrite(heaterPin, heaterStatus);
+//  digitalWrite(heaterPin, HIGH);
+  Thermocouple::init(1, 11);
+  Thermocouple::setSensor(0);
+  tempController::init(20, 2); 
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Thermocouple::readTemperatureData(data, 0);
-  voltageOut = tempController::controlTemp(int(data[0]));
-//   heaterStatus = HIGH;
+  Thermocouple::setSensor(0);
+  Thermocouple::readTemperatureData(data);
+  voltageOut = tempController::controlTemp(data[0]);
   analogWrite(heaterPin, voltageOut);
-  Serial.print("temperature: ");
+
+  //Serial.print("temperature: ");
   Serial.print(data[0]);
-  Serial.print(" deg C, heater is ");
+  Serial.print(", ");
   Serial.println(voltageOut);
-
-  testVoltage = amp * sin((float)(millis() - startMillis) * 2.0 * PI / T) + amp;
-  analogWrite(testPin, testVoltage);
-  Serial.print("PWM OUTPUT: ");
-  Serial.println(testVoltage);
-
-//  if(Serial.available()){
-
-//    int r1 = Serial.read();
-//    int r2 = Serial.read();
-//    int r3 = Serial.read();
-//    Serial.print(r1);
-//    Serial.print(r2);
-//    Serial.println(r3);
-//    int red = (atoi(r1) * 100) + (atoi(r2) * 10) + (atoi(r3) * 1);
-//
-//    Serial.println(red);
-//    //int val = atoi(mess);
-//    analogWrite(testPin, red);
-//    Serial.print("test pint output: ");
-//    Serial.println(red);
-//  }
-  //delay(1000);
+  delay(100);
 }
