@@ -9,8 +9,8 @@
 #define LOW_PRESSURE_3 A2
 #define LOW_PRESSURE_4 A3
 
-#define HIGH_PRESSURE_1 A4
-#define HIGH_PRESSURE_2 A5
+#define HIGH_PRESSURE_1 A5
+//#define HIGH_PRESSURE_2 A5
 
 //#define RFSerial Serial1
 
