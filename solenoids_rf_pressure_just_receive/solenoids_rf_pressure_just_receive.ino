@@ -63,7 +63,7 @@ void loop() {
     Serial.print("Rf input: ");
     Serial.println(readByte);
     if(readByte == 'a') {
-      Serial.print("Toggled LOX 2: ");
+//      Serial.print("Toggled LOX 2: ");
       Serial.println(Solenoids::toggleLOX2Way());
     } else if(readByte == 'b') {
       Serial.print("Toggled LOX 5: ");
@@ -91,15 +91,16 @@ void loop() {
   voltageOut = tempController::controlTemp(data[0]);
   analogWrite(heaterPin, voltageOut);
 
-  arduino.println(data[0]); // temp reading
-
-  arduino.println(voltageOut); // heater voltage
-
+  arduino.print(data[0]); // temp reading
+  arduino.print(", ");
+  arduino.print(voltageOut); // heater voltage
+  arduino.print(", ");
 //    Serial.print("Bus voltage: ");
   v = ina.readBusVoltage();
 //    Serial.print(v, 3);
 //    Serial.println(" V");
-  arduino.println(v);
+  arduino.print(v);
+  arduino.print(", ");
 
 //    Serial.print("Bus Power: ");
   i = ina.readBusPower();

@@ -82,9 +82,7 @@ Serial.println("How many high pressure sensors are connected?");
   if(numHighPressure >= 1){
     pinMode(HIGH_PRESSURE_1, INPUT);
   }
-  if(numHighPressure >= 2){
-    pinMode(HIGH_PRESSURE_2, INPUT);
-  }
+
 
   Serial.print("high, lox tank, propane tank, lox injector, propane injector\n");
 
@@ -104,25 +102,25 @@ void loop() {
     if (Serial.available() > 0) {
       int readByte = Serial.read();
       if(readByte == 'a') {
-        Serial.print("Toggled LOX 2: ");
+//        Serial.print("Toggled LOX 2: ");
 //        Serial.println(valves.toggleLOX2Way());
       } else if(readByte == 'b') {
-        Serial.print("Toggled LOX 5: ");
+//        Serial.print("Toggled LOX 5: ");
 //        Serial.println(valves.toggleLOX5Way());
       } else if (readByte == 'c') {
-        Serial.print("Toggled LOX Gems: ");
+//        Serial.print("Toggled LOX Gems: ");
 //        Serial.println(valves.toggleLOXGems());
       } else if(readByte == 'x') {
-        Serial.print("Toggled PROP 2: ");
+//        Serial.print("Toggled PROP 2: ");
 //        Serial.println(valves.toggleProp2Way());
       } else if (readByte == 'y') {
-        Serial.print("Toggled PROP 5: ");
+//        Serial.print("Toggled PROP 5: ");
 //        Serial.println(valves.toggleProp5Way());
       } else if (readByte == 'z') {
-        Serial.print("Toggled PROP Gems: ");
+//        Serial.print("Toggled PROP Gems: ");
 //        Serial.println(valves.togglePropGems());
       } else if (readByte == 'e') {
-        Serial.print("Toggled High Pressure: ");
+//        Serial.print("Toggled High Pressure: ");
 //        Serial.println(valves.toggleHighPressureSolenoid());
       }
     }
@@ -137,7 +135,7 @@ void loop() {
       if(numHighPressure >= 1){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedHigh1);
         //bufferIndex += String(convertedHigh1).length();
-        Serial.print(convertedHigh1);
+        Serial.print(highPressure1);
       } else {
         Serial.print("-1");
       }
@@ -150,7 +148,7 @@ void loop() {
 
       Serial.print(", ");
       if(numLowPressure >= 1){
-        Serial.print(convertedLow1);
+        Serial.print(lowPressure1);
         //Serial.println("Added first low PT reading;
       } else {
         Serial.print("-1");
@@ -160,7 +158,7 @@ void loop() {
       if(numLowPressure >= 2){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedLow2);
         //bufferIndex += String(convertedLow2).length();
-        Serial.print(convertedLow2);
+        Serial.print(lowPressure2);
       } else {
         Serial.print("-1");
       }
@@ -169,7 +167,7 @@ void loop() {
       if(numLowPressure >= 3){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedLow3);
         //bufferIndex += String(convertedLow3).length();
-        Serial.print(convertedLow3);
+        Serial.print(lowPressure3);
       } else {
         Serial.print("-1");
       }
@@ -178,42 +176,42 @@ void loop() {
       if(numLowPressure >= 4){
         //sprintf(toWriteBuffer + bufferIndex, "%d,", convertedLow4);
         //bufferIndex += String(convertedLow4).length();
-        Serial.print(convertedLow4);
+        Serial.print(lowPressure4);
       } else {
         Serial.print("-1");
       }
 
       Serial.print(", ");
       if (teensy.available()){
-        Serial.print(teensy.parseFloat());
+        Serial.print(teensy.readStringUntil('\n'));
         Serial.read();
       } else {
-        Serial.print(-1);
+        Serial.print("-1, -1, -1, -1");
       }
-
-      Serial.print(", ");
-      if (teensy.available()){
-        Serial.print(teensy.parseFloat());
-        Serial.read();
-      } else {
-        Serial.print(-1);
-      }
-
-      Serial.print(", ");
-      if (teensy.available()){
-        Serial.print(teensy.parseFloat());
-        Serial.read();
-      } else {
-        Serial.print(-1);
-      }
-
-      Serial.print(", ");
-      if (teensy.available()){
-        Serial.print(teensy.parseFloat());
-        Serial.read();
-      } else {
-        Serial.print(-1);
-      }
+//
+//      Serial.print(", ");
+//      if (teensy.available()){
+//        Serial.print(teensy.parseFloat());
+//        Serial.read();
+//      } else {
+//        Serial.print(-1);
+//      }
+//
+//      Serial.print(", ");
+//      if (teensy.available()){
+//        Serial.print(teensy.parseFloat());
+//        Serial.read();
+//      } else {
+//        Serial.print(-1);
+//      }
+//
+//      Serial.print(", ");
+//      if (teensy.available()){
+//        Serial.print(teensy.parseFloat());
+//        Serial.read();
+//      } else {
+//        Serial.print(-1);
+//      }
 
       Serial.print(", ");
       if (false){
@@ -297,7 +295,6 @@ void readData(){
       break;
     case 2:
       highPressure1 = analogRead(HIGH_PRESSURE_1);
-      highPressure2 = analogRead(HIGH_PRESSURE_2);
       break;
   }
 }
