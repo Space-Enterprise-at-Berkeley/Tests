@@ -1,29 +1,54 @@
-#include <Wire.h>
 
-void setup()
-{
-  Wire.begin(); // join i2c bus (address optional for master)
-  //Wire.setSDA(18);
-  //Wire.setSCL(19);
-  Serial.begin(9600);
-}
+//________________________________________________________________
 
-byte x = 5;
+//#include <Wire.h>
+//
+//void setup() {
+//  Wire.begin();
+//  Wire.setSDA(18);
+//  Wire.setSCL(19);
+//  Serial.begin(9600);   
+//}
+//
+//void loop() {
+//  Serial.println("Requesting data");
+//  Wire.requestFrom(9, 1);
+//  Serial.println("Finished request");
+////  while (!Wire.available());
+//  int val = Wire.read();
+//  Serial.println(val);
+//  delay(100);
+//}
 
-void loop()
-{
-  Serial.println("beginning transmission");
-  Wire.beginTransmission(9); // transmit to device #9
-  Serial.println("writing data");
-  //Wire.write("x is ");        // sends five bytes
-  Serial.println(5);
-  Wire.write(5);              // sends one byte  
-  Serial.println("finished transmission");
-  Wire.endTransmission();    // stop transmitting
+//________________________________________________________________
 
-  delay(1000);
-}
+//#include <Wire.h>
+//
+//void setup()
+//{
+//  Wire.begin(); // join i2c bus (address optional for master)
+//  //Wire.setSDA(18);
+//  //Wire.setSCL(19);
+//  Serial.begin(9600);
+//}
+//
+//byte x = 5;
+//
+//void loop()
+//{
+//  Serial.println("beginning transmission");
+//  Wire.beginTransmission(9); // transmit to device #9
+//  Serial.println("writing data");
+//  //Wire.write("x is ");        // sends five bytes
+//  Serial.println(5);
+//  Wire.write(5);              // sends one byte  
+//  Serial.println("finished transmission");
+//  Wire.endTransmission();    // stop transmitting
+//
+//  delay(1000);
+//}
 
+//________________________________________________________________
 
 //#include <Arduino.h>
 //#include <i2c_device.h>
