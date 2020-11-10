@@ -3,6 +3,7 @@
 #include <INA226.h> // https://github.com/jarzebski/Arduino-INA226
 #include <tempController.h>
 #include <Thermocouple.h>
+#include <batteryMonitor.h>
 
 #define heaterPin 7
 
