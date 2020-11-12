@@ -1,24 +1,24 @@
 
 //________________________________________________________________
-
-//#include <Wire.h>
 //
-//void setup() {
-//  Wire.begin();
+#include <Wire.h>
+
+void setup() {
+  Wire.begin();
 //  Wire.setSDA(18);
 //  Wire.setSCL(19);
-//  Serial.begin(9600);   
-//}
-//
-//void loop() {
-//  Serial.println("Requesting data");
-//  Wire.requestFrom(9, 1);
-//  Serial.println("Finished request");
-////  while (!Wire.available());
-//  int val = Wire.read();
-//  Serial.println(val);
-//  delay(100);
-//}
+  Serial.begin(9600);   
+}
+
+void loop() {
+  Serial.println("Requesting data");
+  Wire.requestFrom(9, 1);
+  Serial.println("Finished request");
+//  while (!Wire.available());
+  int val = Wire.read();
+  Serial.println(val);
+  delay(100);
+}
 
 //________________________________________________________________
 

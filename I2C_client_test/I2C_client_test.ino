@@ -1,36 +1,35 @@
 
 //________________________________________________________________
 
-//#include <Wire.h>
-//
-//void setup() {
-//  Wire.begin(9);
-//  Wire.setSDA(18);
-//  Wire.setSCL(19);
-////  Wire.onRequest(requestHandler);
-//  Wire.onReceive(receiveEvent);
-//  Serial.begin(9600);    
-//}
-//
-//void loop() {
-//  delay(100);
-//  
-//}
-//
-//void receiveEvent(int howMany) {
-//  byte x = 10;
-//  Wire.write(x);
-//  Serial.println("wrote byte");
-//}
+#include <Wire.h>
 
-//void requestHandler() {
-//  byte x = 10;
-//  //Wire.beginTransmission();
-//  Wire.write(x);
-//  Serial.print("wrote byte ");
-//  Serial.println(x);
-//  //Wire.endTransmission();
-//}
+void setup() {
+  Wire.begin(9);
+  //  Wire.setSDA(18);
+  //  Wire.setSCL(19);
+  Wire.onRequest(requestHandler);
+  Wire.onReceive(receiveEvent);
+  Serial.begin(9600);
+}
+
+void loop() {
+  delay(100);
+}
+
+void receiveEvent(int howMany) {
+  byte x = 10;
+  Wire.write(x);
+  Serial.println("wrote byte");
+}
+
+void requestHandler() {
+  int x = 10;
+  //Wire.beginTransmission();
+  Wire.write(x);
+  Serial.print("wrote byte ");
+  Serial.println(x);
+  //Wire.endTransmission();
+}
 
 //________________________________________________________________
 
