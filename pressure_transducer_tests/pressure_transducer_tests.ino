@@ -40,7 +40,7 @@ void loop() {
   lowpressureinjector = analogRead(LOW_PRESSURE_INJECTOR);
   //highpressureprop = analogRead(HIGH_PRESSURE_PROP);
   //highpressure = analogRead(HIGH_PRESSURE_PROP);
-  
+
 
   //converted_lox_low = lowPressureConversion(lowpressurelox);
   converted_prop_low = lowPressureConversion(lowpressureprop);
@@ -50,7 +50,7 @@ void loop() {
   //converted_prop_high= highPressureConversion(highpressureprop);
 
   char buffer[25];
- 
+
   time = millis();
   if((time%int(periodic)) == 0){
 //  sprintf(buffer, "%d,%d,%d,%d,%d", lowpressurelox, lowpressureprop, highpressurelox, highpressureprop, lowpressureinjector);
