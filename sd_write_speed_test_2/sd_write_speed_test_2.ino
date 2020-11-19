@@ -13,13 +13,24 @@ char * file_name = String("sd_speed_test_results.txt").c_str();
 
 void setup() {
   // put your setup code here, to run once:
-  SD.begin(BUILTIN_SDCARD);
+  Serial.begin(9600);
+  delay(1000);
+  Serial.println("started up");
+  int res;
+  //res = SD.begin(BUILTIN_SDCARD);
   startTime = millis();
+  Serial.println(res);
+  int i = 0;
+  Serial.println(*(file_name + i));
+//  while(*(file_name +i) != '\0'){
+//    Serial.print(*(file_name + i));
+//  }
+  Serial.println();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  int numIterations = 1000000000;
+  int numIterations = 100000;
   for (int i = 0; i < numIterations; i++){
     write_to_SD(testStrings[i%len]);
   }
