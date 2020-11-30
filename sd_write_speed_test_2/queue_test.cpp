@@ -4,7 +4,11 @@
 #include <ctime>
 #include <ratio>
 
+#include "memcheck.cpp"
+
 using namespace std;
+
+double vm, physmem;
 
 struct Queue {
 
@@ -23,15 +27,23 @@ struct Queue {
     struct Node *temp;
     length++;
     temp = (struct Node *)malloc(sizeof(struct Node));
+  //  process_mem_usage(vm, physmem);
+    //cout << "mem used after node malloc: " << physmem << endl;
     temp->length = message.length();
     temp->message = (char *)malloc(temp->length + 1);
+  //  process_mem_usage(vm, physmem);
+    //cout << "mem used after char * malloc: " << physmem << endl;
+
 
     strncpy(temp->message, message.c_str(), temp->length + 1);
-//    int i = 0;
-//    while(*(temp->message +i) != '\0') {
-//      Serial.print(*(temp->message + i));
-//      i++;
-//    }
+
+    int i = 0;
+    // cout << "enqueue: ";
+    // while(*(temp->message +i) != '\0'){
+    //   cout << *(temp->message + i);
+    //   i++;
+    // }
+    // cout << "\n";
 
     temp->next = nullptr;
     if (!front) {
@@ -43,39 +55,47 @@ struct Queue {
   }
 
   char * dequeue() { // string still needs to be cleared after dequeue; be very careful about this; wherever this is called.
-    //cout << "length: " << +length << endl;
+    // cout << "length: " << +length << endl;
     if(length > 0) {
       length--;
       struct Node *tmp = front;
-      char *msg = tmp->message;
+       char *msg = tmp->message;
 
-      //strncpy(buf, tmp->message, tmp->length + 1);
-//      int i = 0;
-//      while(*(msg +i) != '\0'){
-//        Serial.print(*(msg + i));
-//        i++;
-//      }
+//       //strncpy(buf, tmp->message, tmp->length + 1);
+     // cout << "dequeue: ";
+     int i = 0;
+     // while(*(msg +i) != '\0'){
+     //   cout << *(msg + i);
+     //   i++;
+     // }
+     // cout << "\n";
 
-      if( length != 0){
-        front = front->next;
+      if(length != 0) {
+        front = tmp->next;
       } else {
         front = nullptr;
         end = nullptr;
       }
+
       //free(tmp->message);
+      //process_mem_usage(vm, physmem);
+      //cout << "mem used after char * free: " << physmem << endl;
+
       tmp->message = nullptr;
       tmp->next = nullptr;
       free(tmp);
-      int i = 0;
+      //process_mem_usage(vm, physmem);
+      //cout << "mem used after node free: " << physmem << endl;
+      // i = 0;
       // while(*(msg + i) != '\0'){
       //   cout << *(msg + i);
       //   i++;
       // }
       // cout << endl;
-      free(msg);
-      return nullptr;
+      //free(msg);
+      return msg;
     }
-    return NULL;
+    return nullptr;
   }
 };
 
@@ -113,20 +133,15 @@ int main(int argc, char **argv) {
 
     auto startTime = chrono::high_resolution_clock::now();
 
-    int numIterations = 10000000;
-
+    int numIterations = 60000;
+    cout << "starting\n";
     for (int j = 0; j < numIterations; j++) {
       sdBuffer->enqueue(testStrings[j%len]);
-      if(j % 2 == 0) {
-        char *msg = sdBuffer->dequeue();
-        free(msg);
-      }
-      if(j % 100 == 0) {
-        //while (sdBuffer->length > 0) {
-          char *msg = sdBuffer->dequeue();
-          free(msg);
-        //}
-      }
+
+      // if(j % 2 == 0) {
+      //   char *msg = sdBuffer->dequeue();
+      //   free(msg);
+      // }
     }
     cout << "finished combined enqueue, dequeue\n";
 
