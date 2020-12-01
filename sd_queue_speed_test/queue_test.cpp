@@ -27,23 +27,11 @@ struct Queue {
     struct Node *temp;
     length++;
     temp = (struct Node *)malloc(sizeof(struct Node));
-  //  process_mem_usage(vm, physmem);
-    //cout << "mem used after node malloc: " << physmem << endl;
+
     temp->length = message.length();
     temp->message = (char *)malloc(temp->length + 1);
-  //  process_mem_usage(vm, physmem);
-    //cout << "mem used after char * malloc: " << physmem << endl;
-
 
     strncpy(temp->message, message.c_str(), temp->length + 1);
-
-    int i = 0;
-    // cout << "enqueue: ";
-    // while(*(temp->message +i) != '\0'){
-    //   cout << *(temp->message + i);
-    //   i++;
-    // }
-    // cout << "\n";
 
     temp->next = nullptr;
     if (!front) {
@@ -55,20 +43,10 @@ struct Queue {
   }
 
   char * dequeue() { // string still needs to be cleared after dequeue; be very careful about this; wherever this is called.
-    // cout << "length: " << +length << endl;
     if(length > 0) {
       length--;
       struct Node *tmp = front;
-       char *msg = tmp->message;
-
-//       //strncpy(buf, tmp->message, tmp->length + 1);
-     // cout << "dequeue: ";
-     int i = 0;
-     // while(*(msg +i) != '\0'){
-     //   cout << *(msg + i);
-     //   i++;
-     // }
-     // cout << "\n";
+      char *msg = tmp->message;
 
       if(length != 0) {
         front = tmp->next;
@@ -77,22 +55,10 @@ struct Queue {
         end = nullptr;
       }
 
-      //free(tmp->message);
-      //process_mem_usage(vm, physmem);
-      //cout << "mem used after char * free: " << physmem << endl;
-
       tmp->message = nullptr;
       tmp->next = nullptr;
       free(tmp);
-      //process_mem_usage(vm, physmem);
-      //cout << "mem used after node free: " << physmem << endl;
-      // i = 0;
-      // while(*(msg + i) != '\0'){
-      //   cout << *(msg + i);
-      //   i++;
-      // }
-      // cout << endl;
-      //free(msg);
+
       return msg;
     }
     return nullptr;
