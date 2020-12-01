@@ -17,12 +17,6 @@ const char * file_name = str_file_name.c_str();
 // 1 for FAT16/FAT32, 2 for exFAT, 3 for FAT16/FAT32 and exFAT.
 #define SD_FAT_TYPE 0
 
-// 32 KiB buffer.
-const size_t BUF_DIM = 32768;
-
-// 8 MiB file.
-const uint32_t FILE_SIZE = 256UL*BUF_DIM;
-
 #if SD_FAT_TYPE == 0
 SdFat sd;
 File file;
@@ -36,11 +30,6 @@ ExFile file;
 SdFs sd;
 FsFile file;
 #endif  // SD_FAT_TYPE
-
-uint8_t buf[BUF_DIM];
-
-// buffer as uint32_t
-uint32_t* buf32 = (uint32_t*)buf;
 
 struct Queue {
 
@@ -66,7 +55,7 @@ struct Queue {
     strncpy(temp->message, message.c_str(), temp->length + 1);
     temp->message[temp->length] = '\n'; // add \n to string when enqueue
     temp->message[temp->length + 1] = '\0';
-    
+
     temp->next = nullptr;
     if (!front) {
       front = temp;
@@ -107,7 +96,6 @@ struct Queue * newQueue() {
   return q;
 }
 
-
 struct Queue *sdBuffer;
 
 void setup() {
@@ -116,7 +104,7 @@ void setup() {
   delay(1000);
   Serial.println("started up");
   int res;
-  
+
   res = sd.begin(SdioConfig(FIFO_SDIO));
   Serial.print("sd builtin: ");
   Serial.println(res);
