@@ -103,7 +103,7 @@ void loop() {
 
   startTime = micros();
 
-  int numIterations = 20000;
+  int numIterations = 10000;
 
   for (int j = 0; j < numIterations; j++) {
     sdBuffer->enqueue(testStrings[j%len]);
