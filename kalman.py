@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 
 TERMINAL_VELOCITY = -20
 g = -9.8
-DELTA_T = 1e-3  # interval in seconds
+#DELTA_T = 1e-3  # interval in seconds
+DELTA_T = 20e-3
 
 x = np.matrix([[0.],  # pos
                [1.],  # velocity
@@ -60,7 +61,7 @@ def kalman(data):
                    [0],
                    [0]])
     P = np.identity(3)
-    for j in range(len(data) - 1):
+    for j in range(len(data)):
         x, P = predict(x, P)
         curr_measurement = data[j]
         x, P, K = update(curr_measurement, x, P)
@@ -123,7 +124,8 @@ def descending(data, index_around, region_of_interest=5):
 
 
 def Apogee(filtered_data):
-    outlook = 100
+    #outlook = 100
+    outlook = 50
     for i in range(outlook, len(filtered_data)):
         if(descending(filtered_data, i, outlook)):
             return i
