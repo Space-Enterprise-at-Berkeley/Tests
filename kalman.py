@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 TERMINAL_VELOCITY = -20
 g = -9.8
-#DELTA_T = 1e-3  # interval in seconds
 DELTA_T = 20e-3
 
 x = np.matrix([[0.],  # pos
@@ -68,8 +67,12 @@ def kalman(data):
         filtered.append(x)
     return np.asarray(filtered)
 
-
+'''
+    Convenient way to plot out Alt, Vel & Acceleration.
+'''
 def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
+    # Index when v = 0 for time array
+    actualApogee = 0
 
     altitude = state[:, 0, 0]
     velocity = state[:, 1, 0]
@@ -79,14 +82,17 @@ def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
         altitude_2 = state_2[:, 0, 0]
         velocity_2 = state_2[:, 1, 0]
         accel_2 = state_2[:, 2, 0]
+        actualApogee = actApogee(velocity_2, start_i, end_i)
 
     plt.plot(time[start_i:end_i], altitude[start_i:end_i])
     plt.xlabel("time (s)")
     plt.ylabel("height (m)")
     if(state_2 is not None):
         plt.plot(time[start_i:end_i], altitude_2[start_i:end_i])
+        plt.axvline(time[actualApogee], color='yellow', label="Actual Apogee")
     if(apogee is not None):
-        plt.axvline(apogee)
+        plt.axvline(apogee, label='Approx. Apogee')
+    plt.legend()
     plt.show()
 
     plt.plot(time[start_i:end_i], velocity[start_i:end_i])
@@ -94,9 +100,11 @@ def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
     plt.ylabel("velocity (m/s)")
     plt.axhline(0)
     if(state_2 is not None):
-        plt.plot(time[start_i:end_i], velocity_2[start_i:end_i])
+        plt.plot(time[start_i:end_i], velocity_2[start_i:end_i])    
+        plt.axvline(time[actualApogee], color='yellow', label="Actual Apogee")
     if(apogee is not None):
-        plt.axvline(apogee)
+        plt.axvline(apogee, label='Approx. Apogee')
+    plt.legend()
     plt.show()
 
     plt.plot(time[start_i:end_i], accel[start_i:end_i])
@@ -104,9 +112,14 @@ def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
     plt.ylabel("accel ($\\frac{m}{s^2}$)")
     if(state_2 is not None):
         plt.plot(time[start_i:end_i], accel_2[start_i:end_i])
+        plt.axvline(time[actualApogee], color='yellow', label="Actual Apogee")
     if(apogee is not None):
-        plt.axvline(apogee)
+        plt.axvline(apogee, label='Approx. Apogee')
+    plt.legend()
     plt.show()
+    if(apogee is not None and state_2 is not None):
+        apogee_diff = round(apogee - time[actualApogee], 4)
+        print('Actual - Approx Apogee = ' + str(apogee_diff) + '(s)')
 
 
 def descending(data, index_around, region_of_interest=5):
@@ -124,9 +137,32 @@ def descending(data, index_around, region_of_interest=5):
 
 
 def Apogee(filtered_data):
-    #outlook = 100
-    outlook = 50
+    '''
+    Return the index of data point where it believes apogee is based on descending function above.
+    @var: OUTLOOK determines how many time-steps back the descending function has to look back to check if we are descending.
+    
+    returns: 
+        int
+    '''
+    outlook = 25
     for i in range(outlook, len(filtered_data)):
         if(descending(filtered_data, i, outlook)):
             return i
     return -1
+
+
+def actApogee(vel, start_i=None, end_i=None):
+    '''
+    Returns the index where velocity is closest to zero.
+
+    returns:
+        int
+    '''
+    if(start_i is None):
+        start_i = 0
+    if(end_i is None):
+        end_i = len(vel)
+    epsilon = 0.1
+    for i in range(start_i, end_i):
+        if(-epsilon <= vel[i] <= epsilon):
+            return i
