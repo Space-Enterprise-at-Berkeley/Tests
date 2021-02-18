@@ -90,6 +90,8 @@ def plot_states(time, state, state_2=None, apogee=None):
         accel_2 = state_2[:, 2, 0]
         actualApogee = actApogee(state_2)
     
+    print(start_i)
+    print(end_i)
     plt.plot(time[start_i:end_i], altitude[start_i:end_i])
     plt.xlabel("time (s)")
     plt.ylabel("height (m)")
