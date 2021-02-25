@@ -56,8 +56,8 @@ def kalman(data):
     * data is an array of measurement vector of size 2x1
     '''
     filtered = []
-    x = np.matrix([[0],
-                   [0],
+    x = np.matrix([[data[0,0,0]],
+                   [data[0,1,0]],
                    [0]])
     P = np.identity(3)
     for j in range(len(data)):
@@ -90,8 +90,6 @@ def plot_states(time, state, state_2=None, apogee=None):
         accel_2 = state_2[:, 2, 0]
         actualApogee = actApogee(state_2)
     
-    print(start_i)
-    print(end_i)
     plt.plot(time[start_i:end_i], altitude[start_i:end_i])
     plt.xlabel("time (s)")
     plt.ylabel("height (m)")
@@ -141,7 +139,7 @@ def descending(data, index_around, region_of_interest=5):
     '''
     descending = True
     for i in range(index_around - region_of_interest, index_around):
-        descending &= (data[i] > data[i + 1])
+        descending &= (data[i + 1] < data[i]) 
     return descending
 
 
@@ -154,12 +152,17 @@ def Apogee(filtered_data):
         int
     '''
     height_data = filtered_data[:,0,0]
+    acc_data = filtered_data[:,2,0]
 
-    outlook = 15
-    for i in range(outlook, len(height_data)):
-        if(descending(height_data, i, outlook)):
+    engine_out = False 
+
+    outlook = 10
+    for i in range(outlook, len(height_data)-1):
+        if((acc_data[i+1] - acc_data[i] < -1) and not engine_out):
+            engine_out = True
+        if(descending(height_data, i, outlook) and engine_out):
             return i
-    return -1
+    return len(height_data)-1
 
 def actApogee(filtered_data):
     '''
