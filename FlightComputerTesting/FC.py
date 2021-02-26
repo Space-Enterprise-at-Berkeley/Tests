@@ -8,6 +8,8 @@ Goal: to create a command line script to connect with and send/receive messages
 import serial.tools.list_ports
 import serial
 
+import argparse
+
 from packet import *
 
 _DEBUG = 0
@@ -17,9 +19,9 @@ def debug(level, msg):
         print(msg)
 
 class SerialConn:
-    def __init__(self):
+    def __init__(self, debug=False):
         self.ser = None
-        pass
+        self.debug = debug
 
 
     def openConnection(self):
@@ -29,13 +31,14 @@ class SerialConn:
         chosenCom = ""
         ports = list(serial.tools.list_ports.comports())
         for i, p in enumerate(ports):
-            print("{0}: {1}".format(i+1,p))
+            if self.debug:
+                print("{0}: {1}".format(i+1,p))
             if "Arduino" in p.description or "ACM" in p.description or "cu.usbmodem" in p[0]:
                 chosenCom = p[0]
                 print("Chosen Serial Port: {}".format(p))
         if not chosenCom:
             print("SerialConn Error: No Valid Serial Port Found.")
-            return
+            return False
         print("Chosen COM {}".format(chosenCom))
         baudrate = 57600
         print("Baud Rate {}".format(baudrate))
@@ -43,9 +46,10 @@ class SerialConn:
             ser = serial.Serial(chosenCom, baudrate,timeout=3)
             self.ser = ser
         except Exception as e:
-            self.stop_thread("Invalid Serial Connection")
-            return
+            print("SerialConn Error: Unable to open Serial Connection")
+            return False
         ser.flushInput()
+        return True
 
 
     def sendData(self, msg):
@@ -111,6 +115,50 @@ class FlightComputer:
         pass
         # pack = Packet(rawData)
 
-s = SerialConn()
-s.openConnection()
-fc = FlightComputer(s)
+def main(args):
+    s = SerialConn()
+    if s.openConnection():
+        fc = FlightComputer(s)
+    else:
+        return
+
+    if args.lox_gems:
+        fc.setLoxGems(args.lox_gems)
+    elif args.lox_main:
+        fc.setLoxGems(args.lox_main)
+    elif args.prop_gems:
+        fc.setPropGems(args.prop_gems)
+    elif args.lox_main:
+        fc.setPropGems(args.prop_main)
+    elif args.arm:
+        fc.setMainArm(args.arm)
+    elif args.high_pressure_solenoid:
+        fc.setHighPressureSolenoid(args.high_pressure_solenoid)
+
+
+
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+
+    # Configuration
+    # parser.add_argument('--set_port', type=str,
+    #                     help='set default port to be used when connecting to Flight Computer')
+
+    # Flight Computer Commands
+    parser.add_argument('-lg', '--lox_gems', type=int, choices=[0, 1],
+                        help='Open or Close LOX GEMS (relief valve)')
+    parser.add_argument('-lm', '--lox_main', type=int, choices=[0, 1],
+                        help='Open or Close LOX Main Valve')
+    parser.add_argument('-pg', '--prop_gems', type=int, choices=[0, 1],
+                        help='Open or Close Propane GEMS (relief valve)')
+    parser.add_argument('-pm', '--prop_main', type=int, choices=[0, 1],
+                        help='Open or Close Propane Main Valve')
+    parser.add_argument('-a', '--arm', type=int, choices=[0, 1],
+                        help='Open or Close Arming Valve')
+    parser.add_argument('-hps', '--high_pressure_solenoid', type=int, choices=[0, 1],
+                        help='Open or Close High Pressure Solenoid')
+    args = parser.parse_args()
+    main(args)
