@@ -32,9 +32,9 @@ class SerialConn:
             print("{0}: {1}".format(i+1,p))
             if "Arduino" in p.description or "ACM" in p.description or "cu.usbmodem" in p[0]:
                 chosenCom = p[0]
-                print("Chosen COM: {}".format(p))
+                print("Chosen Serial Port: {}".format(p))
         if not chosenCom:
-            self.stop_thread("No Valid Com Found")
+            print("SerialConn Error: No Valid Serial Port Found.")
             return
         print("Chosen COM {}".format(chosenCom))
         baudrate = 57600
