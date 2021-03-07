@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 TERMINAL_VELOCITY = -20
 g = -9.8
-DELTA_T = 1e-3  # interval in seconds
+DELTA_T = 20e-3
 
 x = np.matrix([[0.],  # pos
                [1.],  # velocity
@@ -56,36 +56,49 @@ def kalman(data):
     * data is an array of measurement vector of size 2x1
     '''
     filtered = []
-    x = np.matrix([[0],
-                   [0],
+    x = np.matrix([[data[0,0,0]],
+                   [data[0,1,0]],
                    [0]])
     P = np.identity(3)
-    for j in range(len(data) - 1):
+    for j in range(len(data)):
         x, P = predict(x, P)
         curr_measurement = data[j]
         x, P, K = update(curr_measurement, x, P)
         filtered.append(x)
     return np.asarray(filtered)
 
-
-def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
+'''
+    Convenient way to plot out Alt, Vel & Acceleration.
+'''
+def plot_states(time, state, state_2=None, apogee=None):
+    # Index when v = 0 for time array
+    actualApogee = 0
+    start_i = 0
+    end_i = len(time)
 
     altitude = state[:, 0, 0]
     velocity = state[:, 1, 0]
     accel = state[:, 2, 0]
 
+    if(apogee is not None):
+        start_i = apogee - 150
+        end_i = apogee + 150
+
     if(state_2 is not None):
         altitude_2 = state_2[:, 0, 0]
         velocity_2 = state_2[:, 1, 0]
         accel_2 = state_2[:, 2, 0]
-
+        actualApogee = actApogee(state_2)
+    
     plt.plot(time[start_i:end_i], altitude[start_i:end_i])
     plt.xlabel("time (s)")
     plt.ylabel("height (m)")
     if(state_2 is not None):
         plt.plot(time[start_i:end_i], altitude_2[start_i:end_i])
+        plt.axvline(time[actualApogee], color='yellow', label="Actual Apogee")
     if(apogee is not None):
-        plt.axvline(apogee)
+        plt.axvline(time[apogee], label='Approx. Apogee')
+    plt.legend()
     plt.show()
 
     plt.plot(time[start_i:end_i], velocity[start_i:end_i])
@@ -93,9 +106,11 @@ def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
     plt.ylabel("velocity (m/s)")
     plt.axhline(0)
     if(state_2 is not None):
-        plt.plot(time[start_i:end_i], velocity_2[start_i:end_i])
+        plt.plot(time[start_i:end_i], velocity_2[start_i:end_i])    
+        plt.axvline(time[actualApogee], color='yellow', label="Actual Apogee")
     if(apogee is not None):
-        plt.axvline(apogee)
+        plt.axvline(time[apogee], label='Approx. Apogee')
+    plt.legend()
     plt.show()
 
     plt.plot(time[start_i:end_i], accel[start_i:end_i])
@@ -103,9 +118,15 @@ def plot_states(time, state, start_i, end_i, state_2=None, apogee=None):
     plt.ylabel("accel ($\\frac{m}{s^2}$)")
     if(state_2 is not None):
         plt.plot(time[start_i:end_i], accel_2[start_i:end_i])
+        plt.axvline(time[actualApogee], color='yellow', label="Actual Apogee")
     if(apogee is not None):
-        plt.axvline(apogee)
+        plt.axvline(time[apogee], label='Approx. Apogee')
+    plt.legend()
     plt.show()
+
+    if(apogee is not None and state_2 is not None):
+        apogee_diff = round(time[apogee] - time[actualApogee], 4)
+        print('Actual - Approx Apogee = ' + str(apogee_diff) + '(s)')
 
 
 def descending(data, index_around, region_of_interest=5):
@@ -118,13 +139,37 @@ def descending(data, index_around, region_of_interest=5):
     '''
     descending = True
     for i in range(index_around - region_of_interest, index_around):
-        descending &= data[i] > data[i + 1]
+        descending &= (data[i + 1] < data[i]) 
     return descending
 
 
 def Apogee(filtered_data):
-    outlook = 100
-    for i in range(outlook, len(filtered_data)):
-        if(descending(filtered_data, i, outlook)):
+    '''
+    Return the index of data point where it believes apogee is based on descending function above.
+    @var: OUTLOOK determines how many time-steps back the descending function has to look back to check if we are descending.
+    
+    returns: 
+        int
+    '''
+    height_data = filtered_data[:,0,0]
+    acc_data = filtered_data[:,2,0]
+
+    engine_out = False 
+
+    outlook = 10
+    for i in range(outlook, len(height_data)-1):
+        if((acc_data[i+1] - acc_data[i] < -1) and not engine_out):
+            engine_out = True
+        if(descending(height_data, i, outlook) and engine_out):
             return i
-    return -1
+    return len(height_data)-1
+
+def actApogee(filtered_data):
+    '''
+    Returns the index where velocity is closest to zero.
+
+    returns:
+        int
+    '''
+    data = filtered_data[:,0,0].tolist()
+    return data.index(max(data))
