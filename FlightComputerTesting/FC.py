@@ -57,11 +57,13 @@ class SerialConn:
         if self.ser is not None:
             self.ser.write(bytes)
         pass
-
+        #function for reading Serial when command -r 1 is sent in terminal
     def readLine(self):
         if self.ser is not None:
-            return str(self.ser.readline())
+            print("What")
+            return str(self.ser.read(100))
         else:
+            print("What2")
             return ''
 
 
@@ -75,6 +77,9 @@ class SerialConn:
         """Read and return the last saved port."""
 
         pass
+
+    def printGarbage(self):
+        print("This is garbage")
 
 
 class FlightComputer:
@@ -123,6 +128,7 @@ def main(args):
         return
 
     if args.lox_gems:
+        print(args.lox_gems)
         fc.setLoxGems(args.lox_gems)
     elif args.lox_main:
         fc.setLoxGems(args.lox_main)
@@ -134,6 +140,11 @@ def main(args):
         fc.setMainArm(args.arm)
     elif args.high_pressure_solenoid:
         fc.setHighPressureSolenoid(args.high_pressure_solenoid)
+        #reading line from Serial connection at this instant
+    elif args.read_line:
+        line = s.readLine()
+        print(line)
+        savetofile(line)
 
 
 
@@ -160,5 +171,6 @@ if __name__ == '__main__':
                         help='Open or Close Arming Valve')
     parser.add_argument('-hps', '--high_pressure_solenoid', type=int, choices=[0, 1],
                         help='Open or Close High Pressure Solenoid')
+    parser.add_argument('-r', '--read_line', type=int, choices=[0, 1])
     args = parser.parse_args()
     main(args)
