@@ -1,13 +1,13 @@
 #include "loadCell.h"
 
 
-HX711 loadcells[1];
+HX711 loadcells[2];
 
-int numSensors = 1;
-byte sckPins[] = {A1};
-byte doutPins[] = {A0};
-float calVals[] = {4000};
-float curVals[2] = {};
+int numSensors = 2;
+byte sckPins[] = {A1, A3};
+byte doutPins[] = {A0, A2};
+float calVals[] = {4000, -4000};
+float curVals[3] = {};
 
 
 void setup() {
@@ -35,7 +35,12 @@ void loop() {
 
   LoadCell::readLoadCells(curVals);
 
+  Serial.println("LoadCell 2:");
   Serial.println(curVals[0]);
+
+  Serial.println("LoadCell 1:");
+  Serial.println(curVals[1]);
+
   
 //  for (int i = 0; i < numSensors; i++) {
 //    Serial.print("LoadCell: ");
