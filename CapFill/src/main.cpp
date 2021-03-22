@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <CapacitiveSensor.h>
+#include <string>
 
 /*
  * CapitiveSense Library Demo Sketch
@@ -9,6 +10,31 @@
  * Receive pin is the sensor pin - try different amounts of foil/metal on this pin
  * Best results are obtained if sensor foil and wire is covered with an insulator such as paper or plastic sheet
  */
+
+uint16_t checksum(uint8_t *data, int count) {
+  uint16_t sum1 = 0;
+  uint16_t sum2 = 0;
+
+  for (int index=0; index<count; index++) {
+    if (data[index] > 0) {
+      sum1 = (sum1 + data[index]) % 255;
+      sum2 = (sum2 + sum1) % 255;
+    }
+  }
+  return (sum2 << 8) | sum1;
+}
+
+void handle_packet(int id, float value) {
+  // send packet
+  String raw_packet = "" + (String)id;
+  raw_packet += "," + (String)value;
+  uint16_t raw_checksum = checksum((uint8_t *)raw_packet.c_str(), raw_packet.length());
+  char c_checksum[5];
+  sprintf(c_checksum, "%x", raw_checksum);
+  raw_packet += "|" + String(c_checksum);
+  raw_packet = "{" + raw_packet + "}";
+  Serial.println(raw_packet);
+}
 
 
 CapacitiveSensor   cs_4_2 = CapacitiveSensor(7,6);        // 10 megohm resistor between pins 4 & 2, pin 2 is sensor pin, add wire, foil
@@ -23,13 +49,9 @@ void loop()
 {
     long start = millis();
     long total1 =  cs_4_2.capacitiveSensor(30);
-
-    Serial.print(millis() - start);        // check on performance in milliseconds
-    Serial.print("\t");                    // tab character for debug window spacing
-
-    Serial.print(total1);                  // print sensor output 1
-    Serial.print("\t");
-    Serial.println(total1/30.0);            // per read value
+    
+    handle_packet(0, millis() - start);
+    handle_packet(1, total1/30.0);          // per read value
 
     delay(200);                             // arbitrary delay to limit data to serial port 
 }
