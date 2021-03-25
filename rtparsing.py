@@ -91,7 +91,6 @@ s = SerialConnection()
 s.enter_mode()
 while True:
     r = s.get_data()
-    print(r.left_rssi())
     points = [{
             "measurement": "radio2",
             "tags": {},
