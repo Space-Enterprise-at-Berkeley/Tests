@@ -13,7 +13,7 @@ F = np.matrix([[1, DELTA_T, DELTA_T**2 / 2],  # state transition matrix
                [0, 1, DELTA_T],
                [0, 0, 1]])
 
-sigma_b = 0.5  # barometer
+sigma_b = 1  # barometer
 sigma_a = 0.5  # accelerometer
 
 R = np.matrix([[sigma_b**2, 0],
