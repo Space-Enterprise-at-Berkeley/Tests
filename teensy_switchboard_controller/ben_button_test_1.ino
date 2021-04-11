@@ -45,34 +45,5 @@ void loop(){
         countPrinted = count;
       }
     }
-  }  
-  if (buttonState == HIGH){
-    Keyboard.set_key1(0);
-    Keyboard.send_now();
+   }
   }
-  if (buttonState2 == LOW){
-    Keyboard.set_key2(KEY_X);
-    Keyboard.send_now();
-  }
-  if (buttonState2 == HIGH){
-    Keyboard.set_key2(0);
-    Keyboard.send_now();
-  }
-  if (buttonState3 == LOW){
-    Keyboard.set_key3(KEY_C);
-    Keyboard.send_now();
-  }
-  if (buttonState3 == HIGH){
-    Keyboard.set_key3(0);
-    Keyboard.send_now();
-  }
-  if (buttonState4 == LOW){
-    Keyboard.set_key4(KEY_A);
-    Keyboard.send_now();
-  }
-  if (buttonState4 == HIGH){
-    Keyboard.set_key4(0);
-    Keyboard.send_now();
-  }
-  delay(2000);
-}
