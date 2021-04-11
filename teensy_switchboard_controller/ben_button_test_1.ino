@@ -35,7 +35,11 @@ void loop(){
         Keyboard.set_key2(KEYPAD_ASTERIX);
         Keyboard.send_now();
         countAt = millis();
-    }
+    } else if (pushButton.risingEdge()) {
+         Keyboard.set_key1(0);
+         Keyboard.set_key2(0);
+         Keyboard.send_now();
+      }
    } else {
     if (count != countPrinted) {
       unsigned long nowMillis = millis();
