@@ -3,7 +3,7 @@
 //Pin layout here
 const int buttonPin = 1; //connect the button to pin 1
 Bounce pushButton = Bounce(buttonPin, 10);
-const int buttonPin2 = 4; //connect the button to pin 2
+const int buttonPin2 = 4; //connect the button to pin 4
 Bounce pushButton2 = Bounce(buttonPin2, 10);
 const int buttonPin3 = 6;
 Bounce pushButton3 = Bounce(buttonPin3, 10);
