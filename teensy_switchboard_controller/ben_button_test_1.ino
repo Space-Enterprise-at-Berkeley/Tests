@@ -1,11 +1,14 @@
 #include <keyboard.h>
 #include <Bounce.h>
 //Pin layout here
-const int buttonPin = 1;
+const int buttonPin = 1; //connect the button to pin 1
 Bounce pushButton = Bounce(buttonPin, 10);
-const int buttonPin2 = 4;
+const int buttonPin2 = 4; //connect the button to pin 2
+Bounce pushButton2 = Bounce(buttonPin2, 10);
 const int buttonPin3 = 6;
+Bounce pushButton3 = Bounce(buttonPin3, 10);
 const int buttonPin4 = 9;
+Bounce pushButton4 = Bounce(buttonPin4, 10);
 int buttonState = 0;
 int buttonState2 = 0;
 int buttonState3 = 0;
@@ -43,7 +46,23 @@ void loop(){
          Keyboard.set_key2(0);
          Keyboard.send_now();
       }
-   } else {
+   } else if (pushButton2.update()){
+    if (pushButton2.fallingEdge()) {
+        count = count +1;
+        Keyboard.set_key1(KEY_2);
+        Keyboard.set_key2(KEY_PERIOD);
+        Keyboard.send_now();
+        Keyboard.set_key1(0);
+        Keyboard.set_key2(0);
+        Keyboard.send_now();
+        countAt = millis();
+    } else if (pushButton2.risingEdge()) {
+         Keyboard.set_key1(0);
+         Keyboard.set_key2(0);
+         Keyboard.send_now();
+      }
+   
+   }else {
     if (count != countPrinted) {
       unsigned long nowMillis = millis();
       if (nowMillis - countAt > 100) {
