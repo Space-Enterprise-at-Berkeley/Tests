@@ -11,17 +11,19 @@
 
 #include "HX711.h" //This library can be obtained here http://librarymanager/All#Avia_HX711
 
-#define LOADCELL_DOUT_PIN  A0
-#define LOADCELL_SCK_PIN  A1
+// LC 1 AMP3 9.25.2021
+//#define LOADCELL_DOUT_PIN  A15
+//#define LOADCELL_SCK_PIN  A14
+
+// LC 2 AMP 3 9.25.2021
+#define LOADCELL_DOUT_PIN  9
+#define LOADCELL_SCK_PIN  10
 
 HX711 scale;
 
-//float calibration_factor = -3950; // LC1 AMP1
+//float calibration_factor = -2520; //-2850; // LC1 AMP3 9.25.2021 A14, A15
 
-//float calibration_factor = 3800; // LC2 AMP1
-float calibration_factor = 4000; // LC2 AMP3
-
-//float calibration_factor = -4000; // LC1 AMP3
+float calibration_factor = 2660; //-2850; // LC2 AMP3 9.25.2021 PWM 9, 10
 
 void setup() {
   Serial.begin(9600);
@@ -50,8 +52,10 @@ void loop() {
   scale.set_scale(calibration_factor); //Adjust to this calibration factor
 
   Serial.print("Reading: ");
-  Serial.print(scale.get_units() * 0.453592, 1);
-  Serial.print(" kg"); //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
+//  Serial.print(scale.get_units() * 0.453592, 1);
+  Serial.print(scale.get_units(), 1);
+  Serial.print(" lb");
+//  Serial.print(" kg"); //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
   Serial.print(" calibration_factor: ");
   Serial.print(calibration_factor);
   Serial.println();
