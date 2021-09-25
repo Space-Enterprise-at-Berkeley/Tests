@@ -21,9 +21,9 @@
 
 HX711 scale;
 
-//float calibration_factor = -2520; //-2850; // LC1 AMP3 9.25.2021 A14, A15
+//float calibration_factor = -2520; // LC1 AMP3 9.25.2021 A14, A15
 
-float calibration_factor = 2660; //-2850; // LC2 AMP3 9.25.2021 PWM 9, 10
+float calibration_factor = 2660; // LC2 AMP3 9.25.2021 PWM 9, 10
 
 void setup() {
   Serial.begin(9600);
