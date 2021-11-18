@@ -80,6 +80,7 @@ class SerialConn:
 class FlightComputer:
     def __init__(self, conn=None):
         self.conn = conn
+        self.serial = True
         pass
 
     def setHighPressureSolenoid(self,state):
@@ -101,6 +102,11 @@ class FlightComputer:
         self.write(24, [state])
 
     def write(self, id, data):
+        if self.serial:
+            writeSerial(id, data)
+            
+
+    def writeSerial(self, id, data):
         pack = Packet(data, id=id)
         try:
             print(pack.encoded_message)
