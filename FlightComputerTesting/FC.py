@@ -7,9 +7,9 @@ Goal: to create a command line script to connect with and send/receive messages
 '''
 import serial.tools.list_ports
 import serial
-
 import argparse
-
+import socket   
+import time
 from packet import *
 
 _DEBUG = 0

@@ -1,304 +1,5 @@
 
-config_str = """
-{
-  sensors: [
-    {
-      name: "LOX Tank Pressure",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 0,
-          storageName: "loxTank",
-          label: "pressure",
-          interpolation: {
-            type: "none", // linear, quadratic
-            unit: "PSI",
-            values: [ // [x, y] pairs
-              [0, -123.89876445934394],
-              [8388607, 1131.40825] // 2^23 - 1
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "Prop Tank Pressure",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 1,
-          storageName: "propTank",
-          label: "pressure",
-          interpolation: {
-            type: "none", // linear, quadratic
-            unit: "PSI",
-            values: [ // [x, y] pairs
-              [0, -123.89876445934394],
-              [8388607, 1131.40825] // 2^23 - 1
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "LOX Injector Pressure",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 2,
-          storageName: "loxInjector",
-          label: "pressure",
-          interpolation: {
-            type: "none", // linear, quadratic
-            unit: "PSI",
-            values: [ // [x, y] pairs
-              [0, -123.89876445934394],
-              [8388607, 1131.40825] // 2^23 - 1
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "Prop Injector Pressure",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 4,
-          storageName: "propInjector",
-          label: "pressure",
-          interpolation: {
-            type: "none", // none, linear, quadratic
-            unit: "PSI",
-            values: [ // [x, y] pairs
-              [0, -123.89876445934394],
-              [8388607, 1131.40825] // 2^23 - 1
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "LOX Dome",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 3,
-          storageName: "loxDome",
-          label: "pressure",
-          interpolation: {
-            type: "none", // linear, quadratic
-            unit: "PSI",
-            values: [ // [x, y] pairs
-              [0, -123.89876445934394],
-              [8388607, 1131.40825] // 2^23 - 1
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "Prop Dome",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 6,
-          storageName: "propDome",
-          label: "pressure",
-          interpolation: {
-            type: "none", // linear, quadratic
-            unit: "PSI",
-            values: [ // [x, y] pairs
-              [0, -123.89876445934394],
-              [8388607, 1131.40825] // 2^23 - 1
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "Nitrogen Pressure",
-      packetId: 1,
-      values: [
-        {
-          packetPosition: 5,
-          storageName: "highPressure",
-          label: "pressure",
-          interpolation: {
-            type: "linear", // linear, quadratic
-            unit: "PSI",
-            values: [
-              [ 1634771.9270400004, 0 ],
-              [ 1771674.0096000005, 150 ],
-              [ 2544768.12288, 700 ],
-              [ 2601139.56864, 730 ],
-              [ 2681670.205440001, 805 ],
-              [ 2802466.1606400004, 890 ],
-              [ 2931315.1795200002, 990 ],
-              [ 3076270.325760001, 1100 ],
-              [ 3189013.217280001, 1200 ],
-              [ 3414499.0003200006, 1351 ],
-              [ 3543348.019200001, 1450 ],
-              [ 3704409.292800001, 1580 ],
-              [ 3946001.203200001, 1760 ],
-              [ 4155380.858880001, 1930 ],
-              [ 4380866.641920001, 2100 ],
-              [ 4509715.660800001, 2180 ],
-              [ 4751307.571200002, 2400 ],
-              [ 4976793.35424, 2550 ],
-              [ 5202279.13728, 2700 ],
-              [ 5411658.792960001, 2870 ],
-              [ 5621038.448640001, 3020 ],
-              [ 5846524.231680001, 3190 ],
-              [ 6015638.568960002, 3333 ],
-              [ 6128381.460480002, 3426 ],
-              [ 6394132.561920001, 3620 ],
-              [ 6474663.198720002, 3700 ],
-              [ 6667936.727040001, 3850 ],
-              [ 6893422.510080002, 4000 ],
-              [ 6990059.274240003, 4080 ],
-              [ 7135014.420480002, 4186 ],
-              [ 7183332.80256, 4221 ],
-              [ 7392712.4582400005, 4365 ]
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "Battery",
-      packetId: 2,
-      values: [
-        {
-          packetPosition: 0,
-          storageName: "batteryVoltage",
-          label: "voltage",
-          interpolation: {
-            type: "none",
-            unit: "Volts"
-          }
-        },
-        {
-          packetPosition: 1,
-          storageName: "wattage",
-          label: "wattage",
-          interpolation: {
-            type: "none",
-            unit: "Watts"
-          }
-        },
-        {
-          packetPosition: 2,
-          storageName: "batteryAmperage",
-          label: "current",
-          interpolation: {
-            type: "none",
-            unit: "Amps"
-          }
-        }
-      ]
-    },
-    {
-      name: "LOX Aux Heater",
-      packetId: 0,
-      values: [
-        {
-          packetPosition: 1,
-          storageName: "loxAuxHeater",
-          label: "loxAuxHeater",
-          interpolation: {
-            type: "linear", // none, linear, quadratic
-            unit: "Volts",
-            values: [
-              [ 0, 0.0 ],
-              [ 255, 12.0 ]
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "LOX Gems Heater",
-      packetId: 6,
-      values: [
-        {
-          packetPosition: 1,
-          storageName: "loxGemsHeater",
-          label: "loxGemsHeater",
-          interpolation: {
-            type: "linear", // none, linear, quadratic
-            unit: "Volts",
-            values: [
-              [ 0, 0.0 ],
-              [ 255, 24.0 ]
-            ]
-          }
-        }
-      ]
-    },
-    {
-      name: "Temperatures",
-      packetId: 4,
-      values: [
-        {
-          packetPosition: 0,
-          storageName: "cryoLoxTankTemp",
-          label: "cryoLoxTankTemp",
-          interpolation: {
-            type: "none", // none, linear, quadratic
-            unit: "Celcius"
-          }
-        },
-        {
-          packetPosition: 1,
-          storageName: "cryoInj1Temp",
-          label: "cryoInj1Temp",
-          interpolation: {
-            type: "none", // none, linear, quadratic
-            unit: "Celcius"
-          }
-        },
-        {
-          packetPosition: 2,
-          storageName: "loxAdapterTreeTemp",
-          label: "loxAdapterTreeTemp",
-          interpolation: {
-            type: "none", // none, linear, quadratic
-            unit: "Celcius"
-          }
-        },
-        {
-          packetPosition: 3,
-          storageName: "loxGemsTemp",
-          label: "loxGemsTemp",
-          interpolation: {
-            type: "none", // none, linear, quadratic
-            unit: "Celcius"
-          }
-        }
-      ]
-    },
-    {
-      name: "EndflowDetection",
-      packetId: 7,
-      values: [
-        {
-          packetPosition: 0,
-          storageName: "endflowDetectionVal",
-          label: "endflowDetectionVal",
-          interpolation: {
-            type: "none", // none, linear, quadratic
-            unit: "none"
-          }
-        }
-      ]
-    }
-  ]
-}
-"""
-
-
-def gen_packet_config():
+def gen_packet_config(cfg):
   '''
   Creates a dictionary in which each unique packetId has a list of the indices
   of the associated sensors in the sensors config list
@@ -306,9 +7,346 @@ def gen_packet_config():
         this indicates that the sensors that are a part of packetId 0 are at
         indices 0, 3, & 4 of config["sensors"]
   '''
-  packets = {}
-  for i, s in enumerate(config["sensors"]):
-    if s.packetId not in packets.keys():
-      packets[s.packetId] = []
-    else:
-      packets[s.packetId].append(i)
+  # replace single quotes with double quotes
+  cfg = cfg.replace("'",'"')
+  cfg = cfg.replace('null','None')
+  searching = True
+  colons = []
+  search_str = cfg
+  prev_total = 0
+  while searching:
+     if ':' not in search_str:
+         searching = False
+     else:
+         pos = search_str.index(':')
+  
+         colons.append(pos + prev_total)
+         prev_total += pos + 1
+         search_str = search_str[pos+1:]
+  res = ''
+  search_str = cfg
+  for num in reversed(colons):
+      start = end = num
+      while not cfg[start].isspace():
+          start -= 1
+      start += 1
+      while cfg[end] != '\n':
+          end += 1
+      d_str = cfg[num+1:end]
+      s_str = cfg[start:num]
+      
+      if '{' not in d_str and '"' not in d_str:
+          if d_str[-1] == ',':
+              d_str = f' "{d_str[1:-1]}",'
+          else:
+              d_str = f' "{d_str[1:]}"'
+      print(s_str, s_str.isnumeric())
+      s_str = f'"{s_str}"'
+      res = s_str + ':' + d_str + search_str[end:] + res
+      search_str = search_str[:start]
+  res = cfg[:colons[0]-1] + res
+  print("--------")
+  print(res)
+  print("--------")
+  print(res.split('\n')[54])
+  
+  import json
+  out = json.loads(res)
+  print(out)
+
+config_str = """
+{
+  0: {
+    0: {
+      field: 'loxTankPTTemp',
+      interpolation: null
+    },
+    1: {
+      field: 'loxTankPTHeater',
+      interpolation: null
+    },
+    2: {
+      field: 'loxTankPTHeaterCurrent',
+      interpolation: null
+    },
+    3: {
+      field: 'loxTankPTHeaterVoltage',
+      interpolation: null
+    },
+    4: {
+      field: 'loxTankPTHeaterOvercurrentFlag',
+      interpolation: Interpolation.interpolateErrorFlags
+    }
+  },
+  1: {
+    0: {
+      field: 'loxTankPT',
+      interpolation: null
+    },
+    1: {
+      field: 'fuelTankPT',
+      interpolation: null
+    },
+    2: {
+      field: 'loxInjectorPT',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelInjectorPT',
+      interpolation: null
+    },
+    4: {
+      field: 'pressurantPT',
+      interpolation: null
+    },
+    5: {
+      field: 'loxDomePT',
+      interpolation: null
+    },
+    6: {
+      field: 'fuelDomePT',
+      interpolation: null
+    },
+  },
+  2: {
+    0: {
+      field: 'flightVoltage',
+      interpolation: null
+    },
+    1: {
+      field: 'flightPower',
+      interpolation: null
+    },
+    2: {
+      field: 'flightCurrent',
+      interpolation: null
+    },
+  },
+  4: {
+    0: {
+      field: 'fuelTankMidTC',
+      interpolation: null
+    },
+    1: {
+      field: 'loxTankBottomTC',
+      interpolation: null
+    },
+    2: {
+      field: 'fuelTankTopTC',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelTankBottomTC',
+      interpolation: null
+    },
+  },
+  16: {
+    0: {
+      field: 'fuelTankPTTemp',
+      interpolation: null
+    },
+    1: {
+      field: 'fuelTankPTHeater',
+      interpolation: null
+    },
+    2: {
+      field: 'fuelTankPTHeaterCurrent',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelTankPTHeaterVoltage',
+      interpolation: null
+    },
+    4: {
+      field: 'fuelTankPTHeaterOvercurrentFlag',
+      interpolation: Interpolation.interpolateErrorFlags
+    },
+  },
+  17: {
+    0: {
+      field: 'loxExpectedStatic',
+      interpolation: null
+    },
+    1: {
+      field: 'fuelExpectedStatic',
+      interpolation: null
+    },
+  },
+  18: {
+    0: {
+      field: 'flowType',
+      interpolation: null
+    },
+    1: {
+      field: 'flowState',
+      interpolation: null
+    },
+  },
+  19: {
+    0: {
+      field: 'loxInjectorPTTemp',
+      interpolation: null
+    },
+    1: {
+      field: 'loxInjectorPTHeater',
+      interpolation: null
+    },
+    2: {
+      field: 'loxInjectorPTHeaterCurrent',
+      interpolation: null
+    },
+    3: {
+      field: 'loxInjectorPTHeaterVoltage',
+      interpolation: null
+    },
+    4: {
+      field: 'loxInjectorPTHeaterOvercurrentFlag',
+      interpolation: Interpolation.interpolateErrorFlags
+    },
+  },
+  20: {
+    0: {
+      field: 'armValve',
+      interpolation: null
+    },
+    1: {
+      field: 'igniter',
+      interpolation: null
+    },
+    2: {
+      field: 'loxMainValve',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelMainValve',
+      interpolation: null
+    },
+    4: {
+      field: 'breakwire',
+      interpolation: null
+    },
+    5: {
+      field: 'led2',
+      interpolation: null
+    },
+    6: {
+      field: 'HPS',
+      interpolation: null
+    },
+    7: {
+      field: 'HPSEnable',
+      interpolation: null
+    },
+  },
+  21: {
+    0: {
+      field: 'armValveCurrent',
+      interpolation: null
+    },
+    1: {
+      field: 'igniterCurrent',
+      interpolation: null
+    },
+    2: {
+      field: 'loxMainValveCurrent',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelMainValveCurrent',
+      interpolation: null
+    },
+    4: {
+      field: 'breakwireCurrent',
+      interpolation: null
+    },
+    5: {
+      field: 'led2Current',
+      interpolation: null
+    },
+    6: {
+      field: 'HPSCurrent',
+      interpolation: null
+    },
+    7: {
+      field: 'overcurrentTriggeredSols',
+      interpolation: Interpolation.interpolateSolenoidErrors
+    },
+  },
+  22: {
+    0: {
+      field: 'armValveVoltage',
+      interpolation: null
+    },
+    1: {
+      field: 'igniterVoltage',
+      interpolation: null
+    },
+    2: {
+      field: 'loxMainValveVoltage',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelMainValveVoltage',
+      interpolation: null
+    },
+    4: {
+      field: 'breakwireVoltage',
+      interpolation: null
+    },
+    5: {
+      field: 'led2Voltage',
+      interpolation: null
+    },
+    6: {
+      field: 'HPSVoltage',
+      interpolation: null
+    },
+    7: {
+      field: 'HPSSupplyVoltage',
+      interpolation: null
+    },
+  },
+  57: {
+    0: {
+      field: 'fcEvent',
+      interpolation: Interpolation.interpolateCustomEvent
+    }
+  },
+  58: {
+    0: {
+      field: 'fcEventEnable',
+      interpolation: null
+    }
+  },
+  60: {
+    0: {
+      field: 'fuelInjectorPTTemp',
+      interpolation: null
+    },
+    1: {
+      field: 'fuelInjectorPTHeater',
+      interpolation: null
+    },
+    2: {
+      field: 'fuelInjectorPTHeaterCurrent',
+      interpolation: null
+    },
+    3: {
+      field: 'fuelInjectorPTHeaterVoltage',
+      interpolation: null
+    },
+    4: {
+      field: 'fuelInjectorPTHeaterOvercurrentFlag',
+      interpolation: Interpolation.interpolateErrorFlags
+    },
+  },
+  65: {
+    0: {
+      field: 'thermocoupleReadEnable',
+      interpolation: null
+    }
+  }
+}
+"""
+  
+gen_packet_config(config_str)
