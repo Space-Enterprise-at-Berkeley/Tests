@@ -95,17 +95,13 @@ jira = JIRA(
     # auth=("admin", "admin"),  # a username/password tuple for cookie auth [Not recommended]
 )
 
-# # Who has authenticated
-# myself = jira.myself()
+# Who has authenticated
+myself = jira.myself()
+
+test_issue = jira.issue('AVI-235')
+
+# jira.add_attachment(issue=test_issue, attachment='ship24.png')
+# new_description = test_issue.fields.description + '\n!ship24.png|thumbnail!'
 # 
-# # Get the mutable application properties for this server (requires
-# # jira-system-administrators permission)
-# props = jira.application_properties()
-# 
-# # Find all issues reported by the admin
-# # Note: we cast() for mypy's benefit, as search_issues can also return the raw json !
-# #   This is if the following argument is used: `json_result=True`
-# issues = cast(ResultList[Issue], jira.search_issues("assignee=admin"))
-# 
-# # Find the top three projects containing issues reported by admin
-# top_three = Counter([issue.fields.project.key for issue in issues]).most_common(3)
+# test_issue.update(description = new_description)
+
