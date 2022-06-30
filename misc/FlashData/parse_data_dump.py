@@ -33,9 +33,9 @@ def get_ranges(values):
 
 
 # file = 'lad5_data.bin'
-file = 'out.bin'
+file = 'lad8/lad8_200000_byte_dump.bin'
 # savefile = 'lad5_packets.pck'
-savefile = ''
+savefile = 'lad8/lad8_blackbox.pck'
 
 with open(file, 'rb') as f:
     data_bytes = f.read()
@@ -99,7 +99,7 @@ toSave = [[len(data_bytes),good_bytes,invalid_bytes,invalid_indices],packets]
 
 if savefile != '':
     with open(savefile, 'wb') as f:
-        pickle.dump(packets, f)
+        pickle.dump(toSave, f)
     
 invalid_ranges = []
 if len(invalid_indices) > 2:
@@ -118,30 +118,35 @@ def byte_diff_id(x):
     else:
         return (x[1]-x[0]+1, data_bytes[x[0]])
     
-print(invalid_indices)
-print()
-print(invalid_ranges)
-print(list(map(byte_diff_id, invalid_ranges)))
+# print(invalid_indices)
+# print()
+# print(invalid_ranges)
+# print(list(map(byte_diff_id, invalid_ranges)))
 
 
 zero_count = 0
 zero_bytes = 0
 zero_series_lengths = []
+invalid_series_lens = []
 for r in invalid_ranges:
-    data_sum = sum(data_bytes[r[0]:r[1]+1])
-    print(f"{r}:", data_sum)
-    if data_sum == 0:
-        zero_count += 1
-        zero_bytes += r[1]-r[0]+1
-        # color bitmap pixels to show that is a series of zeros
-        bitmap[r[0]:r[1]+1] = [0.5]*(r[1]-r[0]+1)
-        zero_series_lengths.append(r[1]-r[0]+1)
-        
-    
-print(f"Of the {len(invalid_ranges)} ranges of invalid bytes, {zero_count} are straight zeros - {round(100*zero_bytes/invalid_bytes,2)}% of the invalid bytes")
-    
+    # only check for zero series r is a tuple, not just a single invalid byte
+    if type(r) != int:
+        data_range = data_bytes[r[0]:r[1]+1]
+        invalid_series_lens.append(r[1]+1-r[0])
+        if all([x == b'\x00' for x in data_range]):
+            zero_count += 1
+            zero_bytes += r[1]-r[0]+1
+            # color bitmap pixels to show that is a series of zeros
+            bitmap[r[0]:r[1]+1] = [0.5]*(r[1]-r[0]+1)
+            zero_series_lengths.append(r[1]-r[0]+1)
+    else:
+        invalid_series_lens.append(1)
 
-    
+
+print(f"Of the {len(invalid_ranges)} ranges of invalid bytes, {zero_count} are straight zeros - {round(100*zero_bytes/invalid_bytes,2)}% of the invalid bytes")
+
+
+
 display_dimension = math.ceil(math.sqrt(len(bitmap)))
 bitmap += [0.2]*(display_dimension**2-len(bitmap)) # add filler bits at end if necessary
 bitmap = np.array(bitmap)
@@ -149,11 +154,12 @@ bitmap_sq = bitmap.reshape(display_dimension, display_dimension)
 plt.imshow(bitmap_sq)
 plt.show()
 
+raw_invalid_series_lens = invalid_series_lens
+invalid_series_lens = [x for x in invalid_series_lens if x>1 and x <= 150]
 
-
-plt.title('Zero Series Length', fontsize=22)
+plt.title('Invalid Series Length', fontsize=22)
 plt.xlabel('Length (bytes)')
 plt.ylabel('Count',fontsize=22)
-bins = [x-0.5 for x in range(min(zero_series_lengths),max(zero_series_lengths)+2)]
-plt.hist(zero_series_lengths, bins=bins, histtype='bar', ec='black')
+bins = [x-0.5 for x in range(min(invalid_series_lens),max(invalid_series_lens)+2)]
+plt.hist(invalid_series_lens, bins='auto', histtype='bar', ec='black')
 plt.show()
