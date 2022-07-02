@@ -2,8 +2,10 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
+from packet_defs import *
 
-loadfile = 'lad5_packets.pck'
+
+loadfile = 'lad8/lad8_blackbox.pck'
 with open(loadfile, 'rb') as f:
     byte_info, packets = pickle.load(f)
     
@@ -11,12 +13,14 @@ with open(loadfile, 'rb') as f:
 
 
 base_time = packets[0].timestamp
+# consider first packet as time=0, offset all subsequent packets accordingly
 for p in packets:
     p.timestamp = (p.timestamp - base_time)/1000
     
-print(packets)
-
-
+# Report on overall recovered data
+print(f"Num packets decoded: {len(packets)}")
+print(f"Time range covered: {packets[-1].timestamp}s = {packets[-1].timestamp/60}m")
+    
 baro_t, baro_val = [], []
 for p in packets:
     if p.id == 5:
@@ -24,9 +28,8 @@ for p in packets:
         baro_val.append(p.data['baroAltitude'])
         
 
-# plt.plot(baro_t, baro_val)
-
-# plt.show()
+plt.plot(baro_t[:30], baro_val[:30])
+plt.show()
 
 baro_t = np.array(baro_t)
 
