@@ -1,0 +1,23 @@
+{
+  "influx_connection": {
+    "url": "influx.andycate.com",
+    "port": 443,
+    "username": "videoGenClient",
+    "password": "xasdah-Jemfk82-doxko6",
+    "remote": true
+  },
+  "database": "lad5_launch",
+  "channels":[
+    {"channel":"baroAltitude", "unit":"alt", "fixed":true}
+  ],
+  "times":{
+    "data_start": "2022-03-19T13:41:12.300Z",
+    "data_end": "2022-03-19T13:42:25.000Z",
+    "data_duration": 0,
+    "t0": null
+  },
+  "data_replay_loc":"lad5",
+  "media_folder": "",
+  "media":[],
+  "output_file":""
+}
