@@ -1,0 +1,21 @@
+{
+  "influx_connection": {
+    "url": "",
+    "port": 0,
+    "username": "",
+    "password": ""
+  },
+  "remote": true,
+  "database": "",
+  "channels":[
+    {"channel": "", "unit" :"", "fixed": true}
+  ],
+  "times":{
+    "data_start": "",
+    "data_duration": 0,
+    "t0": null
+  },
+  "data_replay_loc": "",
+  "media": [],
+  "output_file": ""
+}
