@@ -1,6 +1,7 @@
 from __future__ import print_function
 import pickle
 import os.path
+import time
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -17,17 +18,28 @@ class Presentation(object):
         # retreive presentation data
         self.presentation_obj = slides_service.presentations().get(presentationId=presentation_id).execute()
         self.get_content()
+        self.edits = []
+        self.past_edits = []
     
         
     def get_content(self):
         if self.presentation_obj:
             self.slides = self.presentation_obj.get("slides")
         
-    def send_edits(self, commands):
-        body = {
-            'requests': commands
-        }
-        return slides_service.presentations().batchUpdate(presentationId=presentation_id, body=body).execute()
+    def add_edit(self, edit):
+        self.edits.append(edit)
+    
+    def send_edits(self):
+        if self.edits:
+            body = {
+                'requests': self.edits
+            }
+            response = slides_service.presentations().batchUpdate(presentationId=presentation_id, body=body).execute()
+            self.past_edits.append((time.now(), self.edits))
+            self.edits = []
+            return response
+        else:
+            return None
         
 
 class Slide(object):
@@ -198,14 +210,24 @@ def create_company_slide(company,idx=1):
         }
     }
 
-def duplicate_slide(slideId,idx=1):
+def duplicate_slide(slideId,newId='copiedSlide_001',idx=1):
     return {
       "duplicateObject": {
         "objectId": slideId,
         "objectIds": {
-          slideId: "copiedSlide_001"
+          slideId: newId
         }
       }
+    }
+
+def unskip_slide(slideId):
+    return {
+      "updateSlideProperties": {
+        "objectId": slideId,
+        "slideProperties": {
+            "isSkipped": False
+            }
+        }
     }
 
 def create_image(company,url,x=500,y=300):
@@ -278,9 +300,10 @@ presentation_id = '13cxiZ0WeY9aQAWkU5W3q41GdxI-cw4cjIVTICmCqlCg'
 p1 = Presentation(slides_service, presentation_id)
 
 s1, s2, s3 = p1.slides
-edit_requests = duplicate_slide(s3["objectId"],4)
+p1.add_edit(duplicate_slide(s3["objectId"],4))
+# p1.add_edit(unskip_slide("copiedSlide_001"))
 
-p1.send_edits(edit_requests)
+p1.send_edits()
 
 
 '''
