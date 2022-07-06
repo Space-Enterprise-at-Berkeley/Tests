@@ -1,7 +1,13 @@
+'''
+TODO:
+    -  
+
+'''
+
 from __future__ import print_function
 import pickle
 import os.path
-import time
+from datetime import datetime
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -16,15 +22,14 @@ class Presentation(object):
         self.slides_service = slides_service
         self.presentation_id = presentation_id
         # retreive presentation data
-        self.presentation_obj = slides_service.presentations().get(presentationId=presentation_id).execute()
         self.get_content()
         self.edits = []
         self.past_edits = []
     
         
     def get_content(self):
-        if self.presentation_obj:
-            self.slides = self.presentation_obj.get("slides")
+        self.presentation_obj = slides_service.presentations().get(presentationId=presentation_id).execute()
+        self.slides = list(map(lambda x: Slide(x, self), self.presentation_obj.get("slides")))
         
     def add_edit(self, edit):
         self.edits.append(edit)
@@ -35,18 +40,50 @@ class Presentation(object):
                 'requests': self.edits
             }
             response = slides_service.presentations().batchUpdate(presentationId=presentation_id, body=body).execute()
-            self.past_edits.append((time.now(), self.edits))
+            self.past_edits.append((datetime.now(), self.edits))
             self.edits = []
+            # update slides info
+            self.get_content()
             return response
         else:
             return None
+            
+    def clear_edits(self):
+        self.edits = []
         
 
 class Slide(object):
     """docstring for ."""
 
-    def __init__(self, arg):
-        self.arg = arg
+    def _unskip(obj_id):
+        return {
+          "updateSlideProperties": {
+            "objectId": obj_id,
+            "slideProperties": {
+                "isSkipped": False
+            },
+            "fields": "isSkipped"
+          }
+        }
+
+    def __init__(self, raw, pres):
+        self.object_id = raw["objectId"]
+        self.raw = raw
+        self.pres = pres
+        
+        
+    def duplicate(self, newId='copiedSlide_001'):
+        return {
+          "duplicateObject": {
+            "objectId": self.object_id,
+            "objectIds": {
+              self.object_id: newId
+            }
+          }
+        }
+
+    def unskip(self):
+        return Slide._unskip(self.object_id)
         
         
 class TitleSlide(Slide):
@@ -210,26 +247,6 @@ def create_company_slide(company,idx=1):
         }
     }
 
-def duplicate_slide(slideId,newId='copiedSlide_001',idx=1):
-    return {
-      "duplicateObject": {
-        "objectId": slideId,
-        "objectIds": {
-          slideId: newId
-        }
-      }
-    }
-
-def unskip_slide(slideId):
-    return {
-      "updateSlideProperties": {
-        "objectId": slideId,
-        "slideProperties": {
-            "isSkipped": False
-            }
-        }
-    }
-
 def create_image(company,url,x=500,y=300):
     page_id = company_id(company)
     element_id = "{}_image".format(page_id)
@@ -299,9 +316,13 @@ presentation_id = '13cxiZ0WeY9aQAWkU5W3q41GdxI-cw4cjIVTICmCqlCg'
 
 p1 = Presentation(slides_service, presentation_id)
 
-s1, s2, s3 = p1.slides
-p1.add_edit(duplicate_slide(s3["objectId"],4))
-# p1.add_edit(unskip_slide("copiedSlide_001"))
+title, section_slide, basic_slide = p1.slides
+
+for i in range(2):
+    new_id = f"copiedSlide_{i+1}"
+    p1.add_edit(basic_slide.duplicate(new_id))
+    # don't have slide objects since they haven't been created
+    p1.add_edit(Slide._unskip(new_id))
 
 p1.send_edits()
 
