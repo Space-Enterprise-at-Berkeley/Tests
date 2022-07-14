@@ -90,6 +90,10 @@ class Slide(object):
             }
         }
         
+    def _set_text(self, element_id, txt):
+        self.pres.add_edit(self._delete_text(element_id))
+        self.pres.add_edit(self._insert_text(element_id, txt))
+        
     def duplicate(self, newId='copiedSlide_001'):
         return {
           "duplicateObject": {
@@ -135,10 +139,12 @@ class TextSlide(Slide):
         self.pres.add_edit(self._insert_text(self.title['objectId'], txt))
         
     def update_text1(self, txt):
-        return self._insert_text(self.text1['objectId'], txt)
+        self.pres.add_edit(self._delete_text(self.text1['objectId']))
+        self.pres.add_edit(self._insert_text(self.text1['objectId'], txt))
         
     def update_text2(self, txt):
-        return self._insert_text(self.text2['objectId'], txt)
+        self.pres.add_edit(self._delete_text(self.text2['objectId']))
+        self.pres.add_edit(self._insert_text(self.text2['objectId'], txt))
         
 
         
