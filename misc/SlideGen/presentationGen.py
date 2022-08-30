@@ -44,7 +44,7 @@ title, section_slide, basic_slide = p1.slides[:3]
 
 # duplicate the basic slide template for each topic slide to be created
 for i in range(num_basic_slides):
-    new_id = f"copiedSlide_{i+1}"
+    new_id = f"basicSlide_{i+1}"
     p1.add_edit(basic_slide.duplicate(new_id))
     # don't have slide objects for the newly duplicated slides since they haven't been created
 
